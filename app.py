@@ -11,7 +11,8 @@ PASSWORD = "contraseña"
 def execute_ssh_command(command):
     """Ejecuta un comando en Termux vía SSH y devuelve la salida."""
     client = paramiko.SSHClient()
-    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    client.load_system_host_keys()
+    client.set_missing_host_key_policy(paramiko.RejectPolicy())
     try:
         client.connect(HOST, username=USER, password=PASSWORD)
         stdin, stdout, stderr = client.exec_command(command)
@@ -46,4 +47,4 @@ def send_message():
     return jsonify({"response": response})
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="127.0.0.1", port=5000, debug=False)
