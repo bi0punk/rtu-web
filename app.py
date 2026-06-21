@@ -1,5 +1,7 @@
 from flask import Flask, request, jsonify, render_template
 import paramiko
+import shlex
+import re
 
 app = Flask(__name__)
 
@@ -42,7 +44,9 @@ def send_message():
     text = data.get("text")
     if not number or not text:
         return jsonify({"error": "Número y texto son requeridos"}), 400
-    command = f'termux-sms-send -n {number} "{text}"'
+    if not re.match(r"^\d{7,15}$", number):
+        return jsonify({"error": "Número inválido"}), 400
+    command = f'termux-sms-send -n {shlex.quote(number)} {shlex.quote(text)}'
     response = execute_ssh_command(command)
     return jsonify({"response": response})
 
