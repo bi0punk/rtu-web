@@ -39,37 +39,52 @@
     </div>
 
     <script>
+        const API_TOKEN = "{{ api_token }}";
+
         document.getElementById("smsForm").addEventListener("submit", function(event) {
             event.preventDefault();
             const number = document.getElementById("number").value;
             const text = document.getElementById("text").value;
-            
+
             fetch("/send", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "X-API-Token": API_TOKEN
                 },
                 body: JSON.stringify({ number, text })
             })
             .then(response => response.json())
-            .then(data => alert("Mensaje enviado: " + data.response))
+            .then(data => {
+                if (data.error) alert("Error: " + data.error);
+                else alert("Mensaje enviado: " + data.response);
+            })
             .catch(error => console.error("Error:", error));
         });
 
         function loadMessages() {
-            fetch("/messages")
-                .then(response => response.json())
-                .then(data => {
-                    const messagesList = document.getElementById("messagesList");
-                    messagesList.innerHTML = "";
-                    JSON.parse(data.messages).forEach(msg => {
-                        const li = document.createElement("li");
-                        li.className = "list-group-item";
-                        li.textContent = `De: ${msg.number} - ${msg.body}`;
-                        messagesList.appendChild(li);
-                    });
-                })
-                .catch(error => console.error("Error:", error));
+            fetch("/messages", {
+                headers: { "X-API-Token": API_TOKEN }
+            })
+            .then(response => response.json())
+            .then(data => {
+                const messagesList = document.getElementById("messagesList");
+                messagesList.innerHTML = "";
+                if (data.error) {
+                    const li = document.createElement("li");
+                    li.className = "list-group-item text-danger";
+                    li.textContent = "Error: " + data.error;
+                    messagesList.appendChild(li);
+                    return;
+                }
+                JSON.parse(data.messages).forEach(msg => {
+                    const li = document.createElement("li");
+                    li.className = "list-group-item";
+                    li.textContent = `De: ${msg.number} - ${msg.body}`;
+                    messagesList.appendChild(li);
+                });
+            })
+            .catch(error => console.error("Error:", error));
         }
     </script>
 
