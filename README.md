@@ -4,7 +4,7 @@ Web interface to remotely send and receive SMS via an Android phone running Term
 
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.11+-blue)](https://python.org)
-[![CI](https://github.com/tu-usuario/rtu-web/actions/workflows/ci.yml/badge.svg)](https://github.com/tu-usuario/rtu-web/actions/workflows/ci.yml)
+[![CI](https://github.com/bi0punk/rtu-web/actions/workflows/ci.yml/badge.svg)](https://github.com/bi0punk/rtu-web/actions/workflows/ci.yml)
 
 ## Tabla de Contenidos
 
@@ -57,7 +57,7 @@ rtu-web/
 ## Instalación
 
 ```bash
-git clone https://github.com/tu-usuario/rtu-web.git
+git clone https://github.com/bi0punk/rtu-web.git
 cd rtu-web
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
