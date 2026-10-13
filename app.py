@@ -1,10 +1,11 @@
+import logging
 import os
 import re
 import shlex
-import logging
-from flask import Flask, request, jsonify, render_template, abort
+
 import paramiko
 from dotenv import load_dotenv
+from flask import Flask, abort, jsonify, render_template, request
 
 load_dotenv()
 
@@ -17,7 +18,9 @@ SSH_PASSWORD = os.environ.get("SSH_PASSWORD")
 API_TOKEN = os.environ.get("API_TOKEN")
 
 if not all([SSH_HOST, SSH_USER, SSH_PASSWORD, API_TOKEN]):
-    raise RuntimeError("SSH_HOST, SSH_USER, SSH_PASSWORD and API_TOKEN must be set in environment or .env file")
+    raise RuntimeError(
+        "SSH_HOST, SSH_USER, SSH_PASSWORD and API_TOKEN must be set in environment or .env file"
+    )
 
 
 def execute_ssh_command(command):
@@ -68,7 +71,7 @@ def send_message():
         return jsonify({"error": "Número inválido"}), 400
     if len(text) > 1600:
         return jsonify({"error": "Texto demasiado largo (máx 1600 caracteres)"}), 400
-    command = f'termux-sms-send -n {shlex.quote(number)} {shlex.quote(text)}'
+    command = f"termux-sms-send -n {shlex.quote(number)} {shlex.quote(text)}"
     response = execute_ssh_command(command)
     if response is None:
         return jsonify({"error": "SSH command failed"}), 502
